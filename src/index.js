@@ -2,7 +2,7 @@ require('dotenv').config();
 const bodyParser = require("body-parser");
 const express = require("express");
 const firebase = require("firebase/app");
-const admin = require("firebase-admin");
+// const admin = require("firebase-admin");
 require("firebase/auth")
 require("firebase/firestore")
 
@@ -20,7 +20,7 @@ var firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-admin.initializeApp();
+// admin.initializeApp();
 
 const auth = firebase.auth();
 const db = firebase.firestore();
@@ -29,13 +29,34 @@ db.settings({ timestampsInSnapshots: true });
 
 app.use(bodyParser.json());
 
-app.get("/sign-up", (req, res) => {
+app.post("/sign-up", (req, res) => {
   const { email, password } = req.body;
 
   auth.createUserWithEmailAndPassword(email, password).then(userCredential => {
     res.send(userCredential)
+  }).catch(err => {
+    // catch error
   })
 });
+
+app.get('/sign-out', (req, res) => {
+  auth.signOut().then(() =>
+    res.send("great")
+  ).catch(() => {
+    res.send("err")
+  });
+
+});
+
+app.post('/sign-in', (req, res) => {
+  const { email, password } = req.body;
+
+  auth.signInWithEmailAndPassword(email, password).then(userCredential => {
+    res.send(userCredential)
+  }).catch(err => {
+    res.send(err)
+  })
+})
 
 app.listen(3000, () => {
   console.log(`Listening on http://localhost:${3000}`);
