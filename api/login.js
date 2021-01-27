@@ -1,5 +1,4 @@
-const auth = require("../lib/firebase");
-const db = require("../db");
+const { auth, db } = require("../lib/firebase");
 
 module.exports = (req, res) => {
   const { email, password } = req.body;
